@@ -12,6 +12,18 @@ function love.load()
   love.window.setIcon(windowIcon)
 end
 
+function love.keypressed(key)
+  if key == "q" then
+    love.event.quit()
+  end
+end
+
+function love.update(dt)
+  if love.keyboard.isDown("space") then
+    InitialPaddleYPosition = InitialPaddleYPosition - 1
+  end
+end
+
 function love.draw()
   love.graphics.print(Message, MessageStartPosition, 300)
   love.graphics.arc("line", "closed", 200, 300, 12, 6, 12, 30)
