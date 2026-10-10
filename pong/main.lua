@@ -84,6 +84,9 @@ end
 
 function love.draw()
   love.graphics.print(Message, MessageStartPosition, 300)
+
+  -- Draw the divider line
+  love.graphics.line(WindowWidth / 2, 0, WindowWidth / 2, WindowHeight)
   love.graphics.arc("line", "closed", Ball.x, Ball.y, Ball.radius, 6, 12, 30)
   love.graphics.rectangle("fill", LeftPaddle.x, LeftPaddle.y, LeftPaddle.width, LeftPaddle.height)
   love.graphics.rectangle("fill", RightPaddle.x, RightPaddle.y, RightPaddle.width, RightPaddle.height)
