@@ -11,14 +11,14 @@ function love.load()
   love.window.setIcon(windowIcon)
   Font = love.graphics.newFont(27)
 
-  local ballXVelocity = 100
+  local ballXVelocity = 110
   local ballYVelocity = 80
   Ball = { x = WindowXMidpoint, y = 300, radius = 12, dx = ballXVelocity, dy = ballYVelocity }
   BallIsMovingLeft = true
 
   local paddleHeight = 82
   local paddleThickness = 12
-  local initialPaddleDy = 120
+  local initialPaddleDy = 130
   local initialPaddleYPosition = (WindowHeight / 2) - (paddleHeight / 2)
   LeftPaddle = { x = 0, y = initialPaddleYPosition, dy = initialPaddleDy,
                  width = paddleThickness, height = paddleHeight }
@@ -45,7 +45,7 @@ local function ballHitsPaddle(ball, paddle)
 end
 
 local function ballHitsTopWall(ball)
-  return ball.y <= 0
+  return ball.y - ball.radius <= 0
 end
 
 local function ballHitsBottomWall(ball)
@@ -76,7 +76,7 @@ function love.update(dt)
     BallIsMovingLeft = true
   end
   if ballHitsTopWall(Ball) then
-    Ball.y = 0
+    Ball.y = Ball.radius
     Ball.dy = math.abs(Ball.dy)
   end
   if ballHitsBottomWall(Ball) then
