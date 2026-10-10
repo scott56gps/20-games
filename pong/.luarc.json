@@ -1,6 +1,7 @@
 {
   "workspace.library": [
-    "$HOME/.local/share/lua-language-server/meta/3rd/love2d/library"
+    "${3rd}/love2d/library"
   ],
-  "runtime.version": "LuaJIT"
+  "runtime.version": "LuaJIT",
+  "workspace.checkThirdParty": false
 }
