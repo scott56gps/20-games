@@ -2,7 +2,8 @@ function love.load()
   Message = "Hola, mundo!"
   WindowWidth = 800
   WindowHeight = 600
-  WindowMidpoint = WindowWidth / 2
+  WindowXMidpoint = WindowWidth / 2
+  WindowYMidpoint = WindowHeight / 2
 
   local windowIcon = love.image.newImageData("star-icon.png")
   love.window.setMode(WindowWidth, WindowHeight)
@@ -12,12 +13,12 @@ function love.load()
 
   local ballXVelocity = 100
   local ballYVelocity = 80
-  Ball = { x = 200, y = 300, radius = 12, dx = ballXVelocity, dy = ballYVelocity }
+  Ball = { x = WindowXMidpoint, y = 300, radius = 12, dx = ballXVelocity, dy = ballYVelocity }
   BallIsMovingLeft = true
 
   local paddleHeight = 82
   local paddleThickness = 12
-  local initialPaddleDy = 100
+  local initialPaddleDy = 120
   local initialPaddleYPosition = (WindowHeight / 2) - (paddleHeight / 2)
   LeftPaddle = { x = 0, y = initialPaddleYPosition, dy = initialPaddleDy,
                  width = paddleThickness, height = paddleHeight }
@@ -26,8 +27,8 @@ function love.load()
 
   LeftPlayerScore = 0
   RightPlayerScore = 0
-  LeftPlayerScoreXPosition = WindowMidpoint - 30
-  RightPlayerScoreXPosition = WindowMidpoint + 30
+  LeftPlayerScoreXPosition = WindowXMidpoint - 30
+  RightPlayerScoreXPosition = WindowXMidpoint + 30
 end
 
 function love.keypressed(key)
@@ -70,7 +71,6 @@ function love.update(dt)
   end
   if ballHitsPaddle(Ball, LeftPaddle) then
     BallIsMovingLeft = false
-    Ball.dy = 50
   end
   if ballHitsPaddle(Ball, RightPaddle) then
     BallIsMovingLeft = true
@@ -85,30 +85,48 @@ function love.update(dt)
   end
   if ballLeavesLeftWall(Ball) then
     RightPlayerScore = RightPlayerScore + 1
+    Ball.x = WindowXMidpoint
+    Ball.y = WindowYMidpoint
+    BallIsMovingLeft = false
   end
   if ballLeavesRightWall(Ball) then
     LeftPlayerScore = LeftPlayerScore + 1
+    Ball.x = WindowXMidpoint
+    Ball.y = WindowYMidpoint
+    BallIsMovingLeft = true
   end
-  if love.keyboard.isDown("space") or love.keyboard.isDown("up") then
+  if love.keyboard.isDown("w") then
     if LeftPaddle.y >= 0 then
       LeftPaddle.y = LeftPaddle.y + (-LeftPaddle.dy * dt)
       LeftPaddle.dy = math.abs(LeftPaddle.dy)
     end
   end
-  if love.keyboard.isDown("down") then
+  if love.keyboard.isDown("s") then
     if (LeftPaddle.y + LeftPaddle.height) <= WindowHeight then
       LeftPaddle.y = LeftPaddle.y + (LeftPaddle.dy * dt)
+    end
+  end
+  if love.keyboard.isDown("up") then
+    if RightPaddle.y >= 0 then
+      RightPaddle.y = RightPaddle.y + (-RightPaddle.dy * dt)
+      RightPaddle.dy = math.abs(RightPaddle.dy)
+    end
+  end
+  if love.keyboard.isDown("down") then
+    if (RightPaddle.y + RightPaddle.height) <= WindowHeight then
+      RightPaddle.y = RightPaddle.y + (RightPaddle.dy * dt)
     end
   end
 end
 
 function love.draw()
   love.graphics.setFont(Font)
-  love.graphics.print(LeftPlayerScore, LeftPlayerScoreXPosition, 15)
+  local leftText = tostring(LeftPlayerScore)
+  love.graphics.print(leftText, LeftPlayerScoreXPosition - Font:getWidth(leftText), 15)
   love.graphics.print(RightPlayerScore, RightPlayerScoreXPosition, 15)
 
   -- Draw the divider line
-  love.graphics.line(WindowMidpoint, 0, WindowMidpoint, WindowHeight)
+  love.graphics.line(WindowXMidpoint, 0, WindowXMidpoint, WindowHeight)
   love.graphics.arc("line", "closed", Ball.x, Ball.y, Ball.radius, 6, 12, 30)
   love.graphics.rectangle("fill", LeftPaddle.x, LeftPaddle.y, LeftPaddle.width, LeftPaddle.height)
   love.graphics.rectangle("fill", RightPaddle.x, RightPaddle.y, RightPaddle.width, RightPaddle.height)
