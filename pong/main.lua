@@ -93,29 +93,35 @@ function love.update(dt)
   end
   if ballHitsPaddle(Ball, LeftPaddle) then
     BallIsMovingLeft = false
+    Sounds.paddle:clone():play()
   end
   if ballHitsPaddle(Ball, RightPaddle) then
     BallIsMovingLeft = true
+    Sounds.paddle:clone():play()
   end
   if ballHitsTopWall(Ball) then
     Ball.y = Ball.radius
     Ball.dy = math.abs(Ball.dy)
+    Sounds.wall:clone():play()
   end
   if ballHitsBottomWall(Ball) then
     Ball.y = WindowHeight - Ball.radius
     Ball.dy = -math.abs(Ball.dy)
+    Sounds.wall:clone():play()
   end
   if ballLeavesLeftWall(Ball) then
     RightPlayerScore = RightPlayerScore + 1
     Ball.x = WindowXMidpoint
     Ball.y = WindowYMidpoint
     BallIsMovingLeft = false
+    Sounds.score:clone():play()
   end
   if ballLeavesRightWall(Ball) then
     LeftPlayerScore = LeftPlayerScore + 1
     Ball.x = WindowXMidpoint
     Ball.y = WindowYMidpoint
     BallIsMovingLeft = true
+    Sounds.score:clone():play()
   end
   if love.keyboard.isDown("w") then
     if LeftPaddle.y >= 0 then
