@@ -1,3 +1,18 @@
+local function makeBeep(freq, duration, volume)
+  local rate = 44100
+  local samples = math.floor(rate * duration)
+  local data = love.sound.newSoundData(samples, rate, 16, 1)
+
+  for i = 0, samples - 1 do
+    local t = i / rate
+    local wave = (math.sin(2 * math.pi * freq * t) >= 0) and 1 or -1
+    local fade = 1 - (i / samples)
+    data:setSample(i, wave * volume * fade)
+  end
+
+  return love.audio.newSource(data)
+end
+
 function love.load()
   Message = "Hola, mundo!"
   WindowWidth = 800
@@ -29,6 +44,13 @@ function love.load()
   RightPlayerScore = 0
   LeftPlayerScoreXPosition = WindowXMidpoint - 30
   RightPlayerScoreXPosition = WindowXMidpoint + 30
+
+  -- Sound
+  Sounds = {}
+
+  Sounds.paddle = makeBeep(440, 0.06, 0.3)
+  Sounds.wall = makeBeep(220, 0.06, 0.3)
+  Sounds.score = makeBeep(110, 0.25, 0.3)
 end
 
 function love.keypressed(key)
@@ -39,9 +61,9 @@ end
 
 local function ballHitsPaddle(ball, paddle)
   return ball.x + ball.radius > paddle.x
-    and ball.x - ball.radius < paddle.x + paddle.width
-    and ball.y + ball.radius > paddle.y
-    and ball.y - ball.radius < paddle.y + paddle.height
+      and ball.x - ball.radius < paddle.x + paddle.width
+      and ball.y + ball.radius > paddle.y
+      and ball.y - ball.radius < paddle.y + paddle.height
 end
 
 local function ballHitsTopWall(ball)
