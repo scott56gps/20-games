@@ -13,6 +13,29 @@ local function makeBeep(freq, duration, volume)
   return love.audio.newSource(data)
 end
 
+local function ballHitsPaddle(ball, paddle)
+  return ball.x + ball.radius > paddle.x
+      and ball.x - ball.radius < paddle.x + paddle.width
+      and ball.y + ball.radius > paddle.y
+      and ball.y - ball.radius < paddle.y + paddle.height
+end
+
+local function ballHitsTopWall(ball)
+  return ball.y - ball.radius <= 0
+end
+
+local function ballHitsBottomWall(ball)
+  return ball.y + ball.radius >= WindowHeight
+end
+
+local function ballLeavesLeftWall(ball)
+  return ball.x <= 0
+end
+
+local function ballLeavesRightWall(ball)
+  return ball.x >= WindowWidth
+end
+
 function love.load()
   Message = "Hola, mundo!"
   WindowWidth = 800
@@ -48,38 +71,15 @@ function love.load()
   -- Sound
   Sounds = {}
 
-  Sounds.paddle = makeBeep(440, 0.06, 0.3)
-  Sounds.wall = makeBeep(220, 0.06, 0.3)
-  Sounds.score = makeBeep(110, 0.25, 0.3)
+  Sounds.paddle = makeBeep(440, 0.06, 0.2)
+  Sounds.wall = makeBeep(220, 0.06, 0.2)
+  Sounds.score = makeBeep(110, 0.25, 0.2)
 end
 
 function love.keypressed(key)
   if key == "q" then
     love.event.quit()
   end
-end
-
-local function ballHitsPaddle(ball, paddle)
-  return ball.x + ball.radius > paddle.x
-      and ball.x - ball.radius < paddle.x + paddle.width
-      and ball.y + ball.radius > paddle.y
-      and ball.y - ball.radius < paddle.y + paddle.height
-end
-
-local function ballHitsTopWall(ball)
-  return ball.y - ball.radius <= 0
-end
-
-local function ballHitsBottomWall(ball)
-  return ball.y + ball.radius >= WindowHeight
-end
-
-local function ballLeavesLeftWall(ball)
-  return ball.x <= 0
-end
-
-local function ballLeavesRightWall(ball)
-  return ball.x >= WindowWidth
 end
 
 function love.update(dt)
@@ -123,6 +123,13 @@ function love.update(dt)
     BallIsMovingLeft = true
     Sounds.score:clone():play()
   end
+
+  -- Enemy AI
+  local randomFactor = love.math.random()
+  RightPaddle.y = Ball.y + Ball.x
+  -- RightPaddle.dy = Ball.y
+  --
+
   if love.keyboard.isDown("w") then
     if LeftPaddle.y >= 0 then
       LeftPaddle.y = LeftPaddle.y + (-LeftPaddle.dy * dt)
